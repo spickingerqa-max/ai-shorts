@@ -42,12 +42,10 @@ Manual creation is:
 
 ### 🎬 Generated Shorts Samples (실제 생성 결과)
 
-| 장르 | 영상 |
-|------|------|
-| ✅ Success | [sample1.mp4](./assets/sample1.mp4) |
-| ✅ Success | [sample2.mp4](./assets/sample2.mp4) |
-| 📜 History | [sample3.mp4](./assets/sample3.mp4) |
-| 👻 Horror  | [sample4.mp4](./assets/sample4.mp4) |
+| Success 장르 | Horror 장르 |
+|-------------|------------|
+| ![success](./assets/preview2.gif) | ![horror](./assets/preview.gif) |
+| [▶ 전체 영상 보기](./assets/sample1.mp4) | [▶ 전체 영상 보기](./assets/sample4.mp4) |
 
 > 영상은 RTX 4090에서 RealVisXL + Edge-TTS + MoviePy로 자동 생성됩니다.
 
