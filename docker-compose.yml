@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sf_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: shortsdb
+      MYSQL_USER: shorts
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "shorts", "-p${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: sf_ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  generator:
+    build: ./generator
+    container_name: sf_generator
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    environment:
+      PYTHONUNBUFFERED: "1"
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      CEREBRAS_API_KEY: ${CEREBRAS_API_KEY:-}
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: gemma2:27b
+      MYSQL_HOST: mysql
+      MYSQL_USER: shorts
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: shortsdb
+      GENERATE_INTERVAL_HOURS: ${GENERATE_INTERVAL_HOURS}
+    volumes:
+      - videos:/outputs
+      - hf_cache:/root/.cache/huggingface
+    shm_size: 4gb
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  web:
+    build: ./web
+    container_name: sf_web
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: shorts
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: shortsdb
+    ports:
+      - "8080:80"
+    volumes:
+      - videos:/var/www/html/videos
+      - ./web/html:/var/www/html
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sf_grafana
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+
+volumes:
+  mysql_data:
+  videos:
+  hf_cache:
+  grafana_data:
+  ollama_data:

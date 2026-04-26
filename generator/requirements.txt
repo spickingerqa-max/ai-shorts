@@ -1,0 +1,16 @@
+google-genai
+groq
+cerebras-cloud-sdk
+diffusers==0.29.2
+transformers==4.41.2
+accelerate==0.31.0
+safetensors==0.4.3
+xformers==0.0.27
+edge-tts
+moviepy==1.0.3
+Pillow==10.3.0
+pymysql==1.1.1
+schedule==1.2.2
+numpy==1.26.4
+requests==2.31.0
+python-dotenv==1.0.1

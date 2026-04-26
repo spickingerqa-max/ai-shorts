@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker compose *)",
+      "Bash(docker info *)",
+      "Bash(pip install *)",
+      "Bash(GEMINI_API_KEY=AIzaSyAlBOhP0-E17lWhOQFMBRTALmwR_P4xgJw python -c \"from gemini_script import generate_script; import json; print\\(json.dumps\\(generate_script\\('horror'\\), ensure_ascii=False, indent=2\\)\\)\")",
+      "Bash(GEMINI_API_KEY=AIzaSyAlBOhP0-E17lWhOQFMBRTALmwR_P4xgJw PYTHONIOENCODING=utf-8 python -c \"from gemini_script import generate_script; import json; print\\(json.dumps\\(generate_script\\('horror'\\), ensure_ascii=False, indent=2\\)\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(GEMINI_API_KEY=AIzaSyB2XV4lZtbxzWdWol1aBwYNyMrS-IVtzX4 PYTHONIOENCODING=utf-8 python -c \"from gemini_script import generate_script; import json; print\\(json.dumps\\(generate_script\\('horror'\\), ensure_ascii=False, indent=2\\)\\)\")",
+      "Bash(netstat -ano)",
+      "Bash(tasklist /FI \"PID eq 37600\")",
+      "Bash(tasklist /FI \"PID eq 29692\")",
+      "Bash(docker exec *)",
+      "Bash(docker volume inspect *)",
+      "Bash(curl *)"
+    ]
+  }
+}

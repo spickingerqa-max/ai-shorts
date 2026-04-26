@@ -1,0 +1,203 @@
+{
+  "id": null,
+  "uid": "shorts-factory",
+  "title": "Shorts Factory",
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "총 생성된 쇼츠 수",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "green" },
+          "thresholds": { "mode": "absolute", "steps": [] }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "MySQL",
+          "rawSql": "SELECT COUNT(*) AS value FROM shorts",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "datasource": "MySQL"
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "한국어 쇼츠 수",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "purple" },
+          "thresholds": { "mode": "absolute", "steps": [] }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "MySQL",
+          "rawSql": "SELECT COUNT(*) AS value FROM shorts WHERE filename LIKE '%_ko_%'",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "datasource": "MySQL"
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "영어 쇼츠 수",
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "blue" },
+          "thresholds": { "mode": "absolute", "steps": [] }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "MySQL",
+          "rawSql": "SELECT COUNT(*) AS value FROM shorts WHERE filename LIKE '%_en_%'",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "datasource": "MySQL"
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "평균 파일 크기 (MB)",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "decimals": 1,
+          "unit": "none",
+          "thresholds": { "mode": "absolute", "steps": [] }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "MySQL",
+          "rawSql": "SELECT ROUND(AVG(file_size_mb), 1) AS value FROM shorts",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "datasource": "MySQL"
+    },
+    {
+      "id": 5,
+      "type": "piechart",
+      "title": "장르별 분포",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 10 },
+      "options": {
+        "pieType": "pie",
+        "displayLabels": ["name", "percent"],
+        "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "MySQL",
+          "rawSql": "SELECT genre AS metric, COUNT(*) AS value FROM shorts GROUP BY genre",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "datasource": "MySQL"
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "시간별 생성 추이",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 10 },
+      "options": {
+        "tooltip": { "mode": "single" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        }
+      },
+      "targets": [
+        {
+          "datasource": "MySQL",
+          "rawSql": "SELECT DATE(created_at) AS time, COUNT(*) AS value FROM shorts GROUP BY DATE(created_at) ORDER BY DATE(created_at)",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "datasource": "MySQL"
+    },
+    {
+      "id": 7,
+      "type": "table",
+      "title": "최근 20개 생성 목록",
+      "gridPos": { "x": 0, "y": 14, "w": 24, "h": 12 },
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "created_at", "desc": true }]
+      },
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "left" } },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "genre" },
+            "properties": [
+              { "id": "custom.width", "value": 100 },
+              { "id": "mappings", "value": [
+                { "type": "value", "options": { "horror":  { "text": "👻 horror",  "color": "red"    }, "history": { "text": "📜 history", "color": "blue"   }, "success": { "text": "🚀 success", "color": "green"  }, "trend":   { "text": "🔥 trend",   "color": "orange" } } }
+              ]}
+            ]
+          },
+          { "matcher": { "id": "byName", "options": "file_size_mb" }, "properties": [{ "id": "unit", "value": "none" }, { "id": "decimals", "value": 1 }, { "id": "custom.width", "value": 100 }] },
+          { "matcher": { "id": "byName", "options": "created_at" },   "properties": [{ "id": "custom.width", "value": 170 }] },
+          { "matcher": { "id": "byName", "options": "id" },            "properties": [{ "id": "custom.width", "value": 60 }] }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": "MySQL",
+          "rawSql": "SELECT id, title, genre, file_size_mb, created_at FROM shorts ORDER BY id DESC LIMIT 20",
+          "format": "table",
+          "refId": "A"
+        }
+      ],
+      "datasource": "MySQL"
+    }
+  ]
+}

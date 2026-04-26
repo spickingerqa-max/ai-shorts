@@ -1,0 +1,11 @@
+AddType video/mp4 .mp4
+AddType video/webm .webm
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(mp4|webm)$">
+        Header set Accept-Ranges bytes
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+</IfModule>
+
+Options -Indexes
