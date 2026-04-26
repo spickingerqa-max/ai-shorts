@@ -5,6 +5,13 @@ A multi-agent LLM debate pipeline that researches trends, writes scripts, genera
 
 > 🟢 **Currently running in production** on Docker Compose with RTX 4090 GPU.
 
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)
+![NVIDIA](https://img.shields.io/badge/RTX_4090-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+
 ---
 
 ## 📸 Execution Proof (실행 증거)
@@ -33,50 +40,41 @@ Shorts Factory는 6개의 AI 에이전트가 실시간으로 토론하여 유튜
 
 ## 📊 System Architecture (시스템 블록도)
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     SHORTS FACTORY                          │
-│                                                             │
-│  ┌──────────┐     ┌──────────────────────────────────┐     │
-│  │Scheduler │────▶│      6-Agent AI Pipeline          │     │
-│  │(2h loop) │     │                                  │     │
-│  └──────────┘     │  Agent1: Trend Scout             │     │
-│                   │  (Gemini Flash + Google Search)   │     │
-│                   │          ↓                        │     │
-│                   │  Agent2: Creative Director        │     │
-│                   │  (Groq llama-3.3-70b)            │     │
-│                   │          ↓                        │     │
-│                   │  Agent3: Devil's Advocate         │     │
-│                   │  (Groq llama-3.1-8b)             │     │
-│                   │          ↓                        │     │
-│                   │  Agent4: Analyst                  │     │
-│                   │  (Ollama gemma2:27b  LOCAL GPU)   │     │
-│                   │          ↓                        │     │
-│                   │  Agent5: Script Master            │     │
-│                   │  (Cerebras qwen-3-235b)           │     │
-│                   │          ↓                        │     │
-│                   │  Agent6: Final Writer             │     │
-│                   │  (Groq llama-3.3-70b → JSON)     │     │
-│                   └────────────┬─────────────────────┘     │
-│                                │ Script JSON                │
-│                ┌───────────────┼───────────────┐           │
-│                ▼               ▼               ▼           │
-│         ┌──────────┐   ┌──────────┐   ┌──────────┐        │
-│         │  Image   │   │  Voice   │   │  MySQL   │        │
-│         │  Gen     │   │  Gen     │   │   DB     │        │
-│         │RealVisXL │   │Edge-TTS  │   │          │        │
-│         │  (SDXL)  │   │(Korean)  │   └────┬─────┘        │
-│         └────┬─────┘   └────┬─────┘        │              │
-│              └──────┬───────┘         ┌────▼─────┐        │
-│                     ▼                 │ Grafana  │        │
-│              ┌──────────────┐         │Dashboard │        │
-│              │Video Composer│         └──────────┘        │
-│              │MoviePy+FFmpeg│                              │
-│              │Ken Burns     │   ┌──────────────────┐      │
-│              │Subtitles     │──▶│  Web Dashboard   │      │
-│              └──────────────┘   │  localhost:8080  │      │
-│                                 └──────────────────┘      │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    SCHED["⏰ Scheduler\n2시간마다 자동 실행\n장르: 공포 / 역사 / 성공"]
+
+    subgraph PIPELINE["🤖 6-Agent AI Pipeline"]
+        A1["Agent 1 · Trend Scout\n🔍 Gemini Flash + Google Search\n실시간 트렌드 탐색"]
+        A2["Agent 2 · Creative Director\n✍️ Groq llama-3.3-70b\n3가지 스토리 각도 제안"]
+        A3["Agent 3 · Devil's Advocate\n🔥 Groq llama-3.1-8b\n각도 비판 → 최강 1개 선택"]
+        A4["Agent 4 · Analyst\n🧠 Ollama gemma2:27b  LOCAL GPU\n시청자 심리 분석"]
+        A5["Agent 5 · Script Master\n🎭 Cerebras qwen-3-235b\n5씬 감정 스크립트 초안"]
+        A6["Agent 6 · Final Writer\n📄 Groq llama-3.3-70b → JSON\n최종 출력 + 중복 방지"]
+        A1 --> A2 --> A3 --> A4 --> A5 --> A6
+    end
+
+    subgraph MEDIA["🎨 Media Generation"]
+        IMG["🖼️ Image Gen\nRealVisXL V4.0\nSDXL 실사 이미지"]
+        TTS["🔊 Voice Gen\nEdge-TTS Korean\n한국어 나레이션"]
+        VID["🎬 Video Composer\nMoviePy + FFmpeg\nKen Burns + 자막"]
+        IMG --> VID
+        TTS --> VID
+    end
+
+    subgraph INFRA["🐳 Docker Infrastructure"]
+        DB[("🗄️ MySQL 8.0\n메타데이터 저장")]
+        GF["📊 Grafana\n실시간 모니터링"]
+        WEB["🌐 Web Dashboard\nPHP + Apache\nlocalhost:8080"]
+        DB --> GF
+        DB --> WEB
+    end
+
+    SCHED --> PIPELINE
+    A6 -->|"Script JSON"| MEDIA
+    A6 -->|"메타데이터"| DB
+    VID -->|"MP4 저장"| DB
+    VID --> WEB
 ```
 
 ---
@@ -118,19 +116,35 @@ Shorts Factory는 6개의 AI 에이전트가 실시간으로 토론하여 유튜
 
 ## 🧠 기술 스택 (Tech Stack)
 
+### 🐳 Infrastructure
+
+| 서비스 | 이미지 | 역할 |
+|--------|--------|------|
+| ![Docker](https://img.shields.io/badge/generator-2496ED?style=flat&logo=docker&logoColor=white) | `python:3.11-slim` + CUDA | AI 파이프라인 + 영상 생성 |
+| ![Docker](https://img.shields.io/badge/mysql-2496ED?style=flat&logo=docker&logoColor=white) | `mysql:8.0` | 메타데이터 DB |
+| ![Docker](https://img.shields.io/badge/ollama-2496ED?style=flat&logo=docker&logoColor=white) | `ollama/ollama:latest` | 로컬 LLM (gemma2:27b) |
+| ![Docker](https://img.shields.io/badge/web-2496ED?style=flat&logo=docker&logoColor=white) | `php:8.2-apache` | 웹 대시보드 |
+| ![Docker](https://img.shields.io/badge/grafana-2496ED?style=flat&logo=docker&logoColor=white) | `grafana/grafana:latest` | 모니터링 |
+
+### 🤖 AI / ML
+
 | Category | Technology |
 |----------|------------|
-| Infrastructure | Docker Compose |
-| GPU | NVIDIA RTX 4090 (24GB VRAM) |
-| AI Orchestration | Python multi-agent pipeline |
-| LLM - Cloud | Gemini 2.0 Flash, Groq, Cerebras |
-| LLM - Local | Ollama + gemma2:27b |
-| Image Generation | Stable Diffusion XL (RealVisXL V4.0) |
-| Voice Synthesis | Edge-TTS (Korean) |
-| Video Composition | MoviePy + FFmpeg |
-| Database | MySQL 8.0 |
-| Monitoring | Grafana |
-| Web Dashboard | PHP + Apache |
+| GPU | ![NVIDIA](https://img.shields.io/badge/RTX_4090_24GB-76B900?style=flat&logo=nvidia&logoColor=white) |
+| LLM Cloud | ![Google](https://img.shields.io/badge/Gemini_2.0_Flash-4285F4?style=flat&logo=google&logoColor=white) ![Groq](https://img.shields.io/badge/Groq_llama--3.3--70b-F55036?style=flat&logoColor=white) ![Cerebras](https://img.shields.io/badge/Cerebras_qwen--3--235b-000000?style=flat&logoColor=white) |
+| LLM Local | ![Ollama](https://img.shields.io/badge/Ollama_gemma2:27b-000000?style=flat&logoColor=white) |
+| Image Gen | Stable Diffusion XL · RealVisXL V4.0 |
+| Voice | Edge-TTS (Korean) |
+| Video | MoviePy + FFmpeg · Ken Burns Effect |
+
+### 🗄️ Backend
+
+| Technology | Badge |
+|------------|-------|
+| Database | ![MySQL](https://img.shields.io/badge/MySQL_8.0-4479A1?style=flat&logo=mysql&logoColor=white) |
+| Monitoring | ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat&logo=grafana&logoColor=white) |
+| Web | ![PHP](https://img.shields.io/badge/PHP_8.2-777BB4?style=flat&logo=php&logoColor=white) ![Apache](https://img.shields.io/badge/Apache-D22128?style=flat&logo=apache&logoColor=white) |
+| Language | ![Python](https://img.shields.io/badge/Python_3.11-3776AB?style=flat&logo=python&logoColor=white) |
 
 ---
 
@@ -198,3 +212,4 @@ shorts-factory/
 └── grafana/
     └── provisioning/        # Grafana 자동 설정
 ```
+                                                                                                                                                                                      
