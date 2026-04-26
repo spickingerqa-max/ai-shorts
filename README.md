@@ -1,6 +1,6 @@
 # 🎬 Shorts Factory
 
-**AI-powered automated YouTube Shorts generation system.**  
+**AI-powered automated YouTube Shorts generation system.**
 A multi-agent LLM debate pipeline that researches trends, writes scripts, generates images, synthesizes voice, and produces vertical videos — fully automated, every 2 hours.
 
 > 🟢 **Currently running in production** on Docker Compose with RTX 4090 GPU.
@@ -29,11 +29,11 @@ A multi-agent LLM debate pipeline that researches trends, writes scripts, genera
 
 ## 🇰🇷 프로젝트 소개
 
-Shorts Factory는 6개의 AI 에이전트가 실시간으로 토론하여 유튜브 쇼츠 스크립트를 만들고,  
+Shorts Factory는 6개의 AI 에이전트가 실시간으로 토론하여 유튜브 쇼츠 스크립트를 만들고,
 이미지·음성·영상까지 자동으로 생성하는 완전 자동화 시스템입니다.
 
-**장르:** 공포 / 역사 / 성공  
-**주기:** 2시간마다 자동 실행  
+**장르:** 공포 / 역사 / 성공
+**주기:** 2시간마다 자동 실행
 **인프라:** Docker Compose + RTX 4090 GPU
 
 ---
@@ -47,10 +47,10 @@ flowchart TD
     subgraph PIPELINE["🤖 6-Agent AI Pipeline"]
         A1["Agent 1 · Trend Scout\n🔍 Gemini Flash + Google Search\n실시간 트렌드 탐색"]
         A2["Agent 2 · Creative Director\n✍️ Groq llama-3.3-70b\n3가지 스토리 각도 제안"]
-        A3["Agent 3 · Devil's Advocate\n🔥 Groq llama-3.1-8b\n각도 비판 → 최강 1개 선택"]
-        A4["Agent 4 · Analyst\n🧠 Ollama gemma2:27b  LOCAL GPU\n시청자 심리 분석"]
+        A3["Agent 3 · Devils Advocate\n🔥 Groq llama-3.1-8b\n각도 비판 최강 1개 선택"]
+        A4["Agent 4 · Analyst\n🧠 Ollama gemma2:27b LOCAL GPU\n시청자 심리 분석"]
         A5["Agent 5 · Script Master\n🎭 Cerebras qwen-3-235b\n5씬 감정 스크립트 초안"]
-        A6["Agent 6 · Final Writer\n📄 Groq llama-3.3-70b → JSON\n최종 출력 + 중복 방지"]
+        A6["Agent 6 · Final Writer\n📄 Groq llama-3.3-70b JSON\n최종 출력 중복 방지"]
         A1 --> A2 --> A3 --> A4 --> A5 --> A6
     end
 
@@ -116,35 +116,35 @@ flowchart TD
 
 ## 🧠 기술 스택 (Tech Stack)
 
-### 🐳 Infrastructure
+### 🐳 Docker Infrastructure
 
-| 서비스 | 이미지 | 역할 |
-|--------|--------|------|
-| ![Docker](https://img.shields.io/badge/generator-2496ED?style=flat&logo=docker&logoColor=white) | `python:3.11-slim` + CUDA | AI 파이프라인 + 영상 생성 |
-| ![Docker](https://img.shields.io/badge/mysql-2496ED?style=flat&logo=docker&logoColor=white) | `mysql:8.0` | 메타데이터 DB |
-| ![Docker](https://img.shields.io/badge/ollama-2496ED?style=flat&logo=docker&logoColor=white) | `ollama/ollama:latest` | 로컬 LLM (gemma2:27b) |
-| ![Docker](https://img.shields.io/badge/web-2496ED?style=flat&logo=docker&logoColor=white) | `php:8.2-apache` | 웹 대시보드 |
-| ![Docker](https://img.shields.io/badge/grafana-2496ED?style=flat&logo=docker&logoColor=white) | `grafana/grafana:latest` | 모니터링 |
+| Container | Image | Role |
+|-----------|-------|------|
+| generator | `python:3.11-slim` + CUDA | AI 파이프라인 + 영상 생성 |
+| mysql | `mysql:8.0` | 메타데이터 DB |
+| ollama | `ollama/ollama:latest` | 로컬 LLM (gemma2:27b) |
+| web | `php:8.2-apache` | 웹 대시보드 |
+| grafana | `grafana/grafana:latest` | 실시간 모니터링 |
 
-### 🤖 AI / ML
+### 🤖 AI / ML Stack
 
 | Category | Technology |
 |----------|------------|
-| GPU | ![NVIDIA](https://img.shields.io/badge/RTX_4090_24GB-76B900?style=flat&logo=nvidia&logoColor=white) |
-| LLM Cloud | ![Google](https://img.shields.io/badge/Gemini_2.0_Flash-4285F4?style=flat&logo=google&logoColor=white) ![Groq](https://img.shields.io/badge/Groq_llama--3.3--70b-F55036?style=flat&logoColor=white) ![Cerebras](https://img.shields.io/badge/Cerebras_qwen--3--235b-000000?style=flat&logoColor=white) |
-| LLM Local | ![Ollama](https://img.shields.io/badge/Ollama_gemma2:27b-000000?style=flat&logoColor=white) |
+| GPU | NVIDIA RTX 4090 (24GB VRAM) |
+| LLM Cloud | Gemini 2.0 Flash · Groq llama-3.3-70b · Cerebras qwen-3-235b |
+| LLM Local | Ollama + gemma2:27b (GPU) |
 | Image Gen | Stable Diffusion XL · RealVisXL V4.0 |
 | Voice | Edge-TTS (Korean) |
 | Video | MoviePy + FFmpeg · Ken Burns Effect |
 
-### 🗄️ Backend
+### 🗄️ Backend Stack
 
-| Technology | Badge |
-|------------|-------|
-| Database | ![MySQL](https://img.shields.io/badge/MySQL_8.0-4479A1?style=flat&logo=mysql&logoColor=white) |
-| Monitoring | ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat&logo=grafana&logoColor=white) |
-| Web | ![PHP](https://img.shields.io/badge/PHP_8.2-777BB4?style=flat&logo=php&logoColor=white) ![Apache](https://img.shields.io/badge/Apache-D22128?style=flat&logo=apache&logoColor=white) |
-| Language | ![Python](https://img.shields.io/badge/Python_3.11-3776AB?style=flat&logo=python&logoColor=white) |
+| Category | Technology |
+|----------|------------|
+| Database | MySQL 8.0 |
+| Monitoring | Grafana |
+| Web Server | PHP 8.2 + Apache |
+| Language | Python 3.11 |
 
 ---
 
@@ -185,7 +185,7 @@ docker compose up -d --build
 
 ## 🔒 Security Notice
 
-`.env` 파일에는 API 키가 포함되어 있으므로 **절대 GitHub에 올리지 마세요.**  
+`.env` 파일에는 API 키가 포함되어 있으므로 **절대 GitHub에 올리지 마세요.**
 `.env.example` 파일을 참고하여 직접 발급 후 입력하세요.
 
 ---
@@ -212,4 +212,3 @@ shorts-factory/
 └── grafana/
     └── provisioning/        # Grafana 자동 설정
 ```
-                                                                                                                                                                                      
