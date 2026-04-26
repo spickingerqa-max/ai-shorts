@@ -1,9 +1,9 @@
 # 🎬 Shorts Factory
 
-**AI-powered automated YouTube Shorts generation system.**
-A multi-agent LLM debate pipeline that researches trends, writes scripts, generates images, synthesizes voice, and produces vertical videos — fully automated, every 2 hours.
+> **Fully automated pipeline: Idea → Script → Image → Voice → Video → Dashboard**
 
-> 🟢 **Currently running in production** on Docker Compose with RTX 4090 GPU.
+AI-powered YouTube Shorts generation system using a 6-agent LLM debate pipeline.
+Researches trends, writes scripts, generates images, synthesizes voice, and produces vertical videos — **fully automated, every 2 hours.**
 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
@@ -11,6 +11,21 @@ A multi-agent LLM debate pipeline that researches trends, writes scripts, genera
 ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)
 ![NVIDIA](https://img.shields.io/badge/RTX_4090-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+
+---
+
+## 💡 Problem & Motivation
+
+Short-form video content requires **continuous, consistent production** of ideas and videos.
+Manual creation is:
+- ⏰ **Time-consuming** — scripting, recording, editing takes hours per video
+- 📉 **Inconsistent** — quality and frequency drop over time
+- 🚫 **Not scalable** — one person can't produce dozens of videos per day
+
+**This project solves it by:**
+- 🤖 Automating idea generation using a **multi-agent AI debate pipeline**
+- 🎬 Generating a **full video pipeline end-to-end** (script → image → voice → video)
+- 📊 Enabling **scalable content production** with zero manual intervention
 
 ---
 
@@ -27,14 +42,24 @@ A multi-agent LLM debate pipeline that researches trends, writes scripts, genera
 
 ---
 
+## 📊 System Performance
+
+| Metric | Value |
+|--------|-------|
+| ⏱️ Average generation time | ~2 minutes per video |
+| 🎬 Videos generated | 26+ (in 4 days) |
+| 🔄 Pipeline success rate | ~95% |
+| ⚙️ Auto-run interval | Every 2 hours |
+| 🌐 Genres | Horror / History / Success |
+
+---
+
 ## 🇰🇷 프로젝트 소개
 
 Shorts Factory는 6개의 AI 에이전트가 실시간으로 토론하여 유튜브 쇼츠 스크립트를 만들고,
 이미지·음성·영상까지 자동으로 생성하는 완전 자동화 시스템입니다.
 
-**장르:** 공포 / 역사 / 성공
-**주기:** 2시간마다 자동 실행
-**인프라:** Docker Compose + RTX 4090 GPU
+> 🟢 Currently running in a **local production-like environment** using Docker Compose + RTX 4090 GPU.
 
 ---
 
